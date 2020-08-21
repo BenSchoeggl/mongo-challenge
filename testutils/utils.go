@@ -2,7 +2,6 @@ package testutils
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -30,12 +29,16 @@ func GetTestFileData(t *testing.T) map[string][]byte {
 		if err != nil {
 			t.Errorf("error when trying to read test file: %v", err)
 		}
-		fmt.Println("adding file at ", file.Name())
 		result[file.Name()] = fileBytes
 	}
 	return result
 }
 
+// ValidateResults compares the results of a unit test to the golden data on disk. If the input data
+// differs from the data on disk, the currently running test will be failed now, and the data on
+// disk will be overwritten with the incoming data.
+// The golden data should be located at
+// <path to calling file>/test_data/golden_data/<test name>/<test case names>
 func ValidateResults(t *testing.T, results map[string][]byte) {
 	goldenDataDir := path.Join(getTestFileDir(t), "golden_data", t.Name())
 	require.Nil(t, os.MkdirAll(goldenDataDir, 0700))

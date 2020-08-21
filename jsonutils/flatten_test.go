@@ -2,7 +2,6 @@ package jsonutils
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/BenSchoeggl/mongo-challenge/testutils"
@@ -15,7 +14,6 @@ func TestFlatten(t *testing.T) {
 	for caseName, caseData := range testCases {
 		data := map[string]interface{}{}
 		require.Nil(t, json.Unmarshal(caseData, &data), "could not unmarshal test data to map")
-		fmt.Println("testing data: ", data)
 		flattenedJSON := Flatten(data)
 		flattenedJSONBytes, err := json.MarshalIndent(flattenedJSON, "", "    ")
 		require.Nil(t, err, "could marshal test data to bytes")
