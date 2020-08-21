@@ -4,6 +4,7 @@ package jsonutils
 // a flattened version, meaning that the keys of the parents of all the leaves in the
 // object are joined with a ".". For example the json {"a":{"b":"c"}} will become
 // {"a.b":"c"}
+// The input json object cannot be any deeper than 1 * 10^8 levels deep.
 func Flatten(json map[string]interface{}) interface{} {
 	result := map[string]interface{}{}
 	for k, v := range json {
