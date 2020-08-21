@@ -52,16 +52,20 @@ func ValidateResults(t *testing.T, results map[string][]byte) {
 		existingGoldenFiles[filePath] = fileBytes
 	}
 	var goldenDataChanged bool
-	for caseName, data := range results {
+	for caseName, caseResultData := range results {
 		caseFilePath := path.Join(goldenDataDir, caseName)
 		existingGoldenData, ok := existingGoldenFiles[caseFilePath]
 		// if it doesn't already exist, or has changed, we need to write
-		if !ok || bytes.Equal(existingGoldenData, data) {
+		if !ok || !bytes.Equal(existingGoldenData, caseResultData) {
 			goldenDataChanged = true
-			ioutil.WriteFile(caseFilePath, data, 0644)
-			// deleting from a map while youre iterating is safe in go
-			delete(existingGoldenFiles, caseFilePath)
+			require.Nil(
+				t,
+				ioutil.WriteFile(caseFilePath, caseResultData, 0644),
+				"couldn't write golden data",
+			)
 		}
+		// deleting from a map while youre iterating is safe in go
+		delete(existingGoldenFiles, caseFilePath)
 	}
 	// if there is anything left in existingGoldenFiles, we need to delete it
 	for noLongerNeededGoldenFile := range existingGoldenFiles {
